@@ -95,3 +95,5 @@ Dataset **"Most Streamed Spotify Songs 2023"** do Kaggle. Colunas principais:
 - Pergunte no grupo da turma.
 
 Bom projeto. 🎧
+
+_version 1.0
