@@ -2,13 +2,11 @@
 AULA 2 - Explorador de Faixas
 ==============================
 
-Topicos aplicados:
-- Inspecao de conteudo (describe, value_counts)
-- Atribuicao e criacao de colunas
+Tópicos aplicados:
+- Inspeção de conteúdo (describe, value_counts)
+- Atribuição e criação de colunas
 - Filtros simples e com AND/OR
 - Dados faltantes e duplicados
-
-Preencha as funcoes marcadas com `# TODO`.
 """
 
 import pandas as pd
@@ -19,116 +17,117 @@ def carregar_e_limpar(caminho_csv: str) -> pd.DataFrame:
     Carrega o CSV do Spotify e limpa os dados.
 
     Passos:
-      1) Ler o CSV com encoding='latin-1'.
-      2) Converter 'streams' para numero (pd.to_numeric com errors='coerce').
-      3) Remover linhas com streams nulos (dropna).
-      4) Remover duplicatas (drop_duplicates).
-      5) Retornar o DataFrame limpo.
+    1. Lê o CSV com encoding latin-1.
+    2. Converte a coluna streams para numérica.
+    3. Remove linhas sem valor em streams.
+    4. Remove duplicatas.
+    5. Retorna o DataFrame limpo.
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao carregar_e_limpar ainda nao implementada (aula 2)")
+    # Usa o encoding correto para preservar caracteres especiais no arquivo.
+    df = pd.read_csv(caminho_csv, encoding="latin-1")
+
+    # Converte para numérico e marca valores inválidos como NaN.
+    df["streams"] = pd.to_numeric(df["streams"], errors="coerce")
+
+    # Remove linhas sem streams, pois elas não podem ser analisadas corretamente.
+    df = df.dropna(subset=["streams"])
+
+    # Elimina duplicatas para evitar repetições indevidas na análise.
+    df = df.drop_duplicates()
+
+    return df
 
 
 def inspecionar_coluna(df: pd.DataFrame, coluna: str):
     """
-    Se a coluna for numerica, retorna df[coluna].describe().
-    Caso contrario, retorna df[coluna].value_counts().
+    Retorna uma visão resumida da coluna.
 
-    Dica: use pd.api.types.is_numeric_dtype(df[coluna]).
+    Colunas numéricas usam describe; colunas categóricas usam value_counts.
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao inspecionar_coluna ainda nao implementada (aula 2)")
+    # A decisão é baseada no tipo da coluna para mostrar o resumo mais útil.
+    if pd.api.types.is_numeric_dtype(df[coluna]):
+        return df[coluna].describe()
+
+    return df[coluna].value_counts()
 
 
 def filtrar_por_artista(df: pd.DataFrame, artista: str) -> pd.DataFrame:
     """
-    Retorna apenas as linhas em que o nome do artista CONTEM o texto buscado
-    (sem diferenciar maiusculas/minusculas).
-
-    Dica: .str.contains(artista, case=False, na=False) na coluna 'artist(s)_name'.
+    Retorna as linhas em que o nome do artista contém o texto buscado.
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao filtrar_por_artista ainda nao implementada (aula 2)")
+    # Usa contains com case=False para tornar a busca insensível a maiúsculas.
+    return df[df["artist(s)_name"].str.contains(artista, case=False, na=False)]
 
 
 def filtrar_hits(df: pd.DataFrame, ano_min: int, streams_min: int) -> pd.DataFrame:
     """
-    Filtro com AND: released_year >= ano_min E streams >= streams_min.
-
-    Dica: use parenteses ao redor de cada expressao e o operador & .
+    Aplica um filtro com AND entre ano mínimo e número mínimo de streams.
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao filtrar_hits ainda nao implementada (aula 2)")
+    # O uso de & garante que as duas condições sejam satisfeitas ao mesmo tempo.
+    return df[(df["released_year"] >= ano_min) & (df["streams"] >= streams_min)]
 
 
 def criar_categoria_streams(df: pd.DataFrame) -> pd.DataFrame:
     """
-    Cria uma coluna 'categoria_streams':
-      - streams >= 1_000_000_000  -> 'Super Hit'
-      - streams >= 500_000_000    -> 'Hit'
-      - streams >= 100_000_000    -> 'Medio'
-      - resto                     -> 'Underground'
-
-    NAO altere o df original (use df.copy()).
+    Cria uma coluna com categorias com base no volume de streams.
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao criar_categoria_streams ainda nao implementada (aula 2)")
+    # Trabalha em uma cópia para não alterar o DataFrame original.
+    df_novo = df.copy()
+    df_novo["categoria_streams"] = "Underground"
+
+    # As condições são organizadas em ordem crescente para sobrescrever corretamente.
+    df_novo.loc[df_novo["streams"] >= 100_000_000, "categoria_streams"] = "Medio"
+    df_novo.loc[df_novo["streams"] >= 500_000_000, "categoria_streams"] = "Hit"
+    df_novo.loc[df_novo["streams"] >= 1_000_000_000, "categoria_streams"] = "Super Hit"
+
+    return df_novo
 
 
 def filtrar_por_modo(df: pd.DataFrame, modo: str) -> pd.DataFrame:
     """
-    Filtra o DataFrame por modo musical: 'Major' ou 'Minor'.
-
-    Dica: filtro simples df[df['mode'] == modo].
+    Filtra o DataFrame pelo modo musical informado.
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao filtrar_por_modo ainda nao implementada (aula 2)")
+    # O filtro simples é suficiente porque a comparação é direta.
+    return df[df["mode"] == modo]
 
 
-def filtrar_por_intervalo_ano(df: pd.DataFrame, ano_inicio: int, ano_fim: int) -> pd.DataFrame:
+def filtrar_por_intervalo_ano(
+    df: pd.DataFrame,
+    ano_inicio: int,
+    ano_fim: int,
+) -> pd.DataFrame:
     """
-    Retorna as musicas lancadas entre ano_inicio e ano_fim (inclusivo nos
-    dois lados).
-
-    Dica: pode usar .between(ano_inicio, ano_fim) ou um AND com >= e <=.
+    Retorna as músicas lançadas entre dois anos, inclusive.
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao filtrar_por_intervalo_ano ainda nao implementada (aula 2)")
+    # Usa duas condições com AND para incluir os limites do intervalo.
+    return df[(df["released_year"] >= ano_inicio) & (df["released_year"] <= ano_fim)]
 
 
-def filtrar_super_dancante_ou_super_energica(df: pd.DataFrame, limite: int = 85) -> pd.DataFrame:
+def filtrar_super_dancante_ou_super_energica(
+    df: pd.DataFrame,
+    limite: int = 85,
+) -> pd.DataFrame:
     """
-    Filtro com OR: retorna musicas em que 'danceability_%' >= limite OU
-    'energy_%' >= limite.
-
-    Dica: use o operador | (pipe) entre as expressoes, com parenteses ao
-    redor de cada uma.
+    Retorna músicas com danceability ou energy acima do limite.
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao filtrar_super_dancante_ou_super_energica ainda nao implementada (aula 2)")
+    # O operador | representa a lógica de OR entre as duas colunas.
+    return df[(df["danceability_%"] >= limite) | (df["energy_%"] >= limite)]
 
 
 def contar_nulos_por_coluna(df: pd.DataFrame) -> pd.Series:
     """
-    Retorna uma Series com o nome de cada coluna e a quantidade de valores
-    nulos.
-
-    Dica: df.isnull().sum().
+    Retorna a quantidade de valores nulos em cada coluna.
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao contar_nulos_por_coluna ainda nao implementada (aula 2)")
+    # isnull().sum() é a forma mais direta de resumir dados faltantes.
+    return df.isnull().sum()
 
 
 def preencher_nulos_da_coluna(df: pd.DataFrame, coluna: str, valor) -> pd.DataFrame:
     """
-    Preenche os valores nulos da coluna informada com o valor passado.
-
-    Exemplo:
-      preencher_nulos_da_coluna(df, 'key', 'Desconhecido')
-
-    NAO altere o df original. Retorne uma copia.
-
-    Dica: df_novo = df.copy(); df_novo[coluna] = df_novo[coluna].fillna(valor).
+    Preenche os valores nulos de uma coluna sem alterar o DataFrame original.
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao preencher_nulos_da_coluna ainda nao implementada (aula 2)")
+    # Cria uma cópia para preservar os dados originais e aplicar a alteração em uma nova estrutura.
+    df_novo = df.copy()
+    df_novo[coluna] = df_novo[coluna].fillna(valor)
+
+    return df_novo

@@ -27,8 +27,10 @@ def criar_series_simples(valores: list, indices: list) -> pd.Series:
 
     Dica: pd.Series(data=..., index=...)
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao criar_series_simples ainda nao implementada (aula 1)")
+    # Cria e retorna uma Series usando os valores e indices fornecidos.
+    # Exemplo para um leigo: cada elemento da lista `valores` vira um item
+    # e `indices` define os rótulos das linhas.
+    return pd.Series(data=valores, index=indices)
 
 
 def criar_dataframe_de_dict(dados: dict) -> pd.DataFrame:
@@ -40,8 +42,10 @@ def criar_dataframe_de_dict(dados: dict) -> pd.DataFrame:
       criar_dataframe_de_dict({'nome': ['Ana', 'Bob'], 'idade': [20, 25]})
       -> DataFrame com colunas 'nome' e 'idade'
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao criar_dataframe_de_dict ainda nao implementada (aula 1)")
+    # Converte o dicionário em um DataFrame.
+    # Cada chave do dicionário vira uma coluna; as listas associadas
+    # são as linhas dessa coluna.
+    return pd.DataFrame(dados)
 
 
 def obter_dimensoes(df: pd.DataFrame) -> tuple:
@@ -50,8 +54,8 @@ def obter_dimensoes(df: pd.DataFrame) -> tuple:
 
     Dica: o atributo .shape ja retorna uma tupla pronta.
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao obter_dimensoes ainda nao implementada (aula 1)")
+    # Retorna uma tupla (linhas, colunas). Muito útil para inspeção rápida.
+    return df.shape
 
 
 def renomear_colunas(df: pd.DataFrame, mapeamento: dict) -> pd.DataFrame:
@@ -67,8 +71,9 @@ def renomear_colunas(df: pd.DataFrame, mapeamento: dict) -> pd.DataFrame:
 
     Dica: df.rename(columns=mapeamento) ja retorna um novo df.
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao renomear_colunas ainda nao implementada (aula 1)")
+    # Retorna um novo DataFrame com colunas renomeadas de acordo com o mapa.
+    # Não altera o DataFrame original.
+    return df.rename(columns=mapeamento)
 
 
 def definir_indice(df: pd.DataFrame, coluna: str) -> pd.DataFrame:
@@ -81,8 +86,9 @@ def definir_indice(df: pd.DataFrame, coluna: str) -> pd.DataFrame:
 
     Dica: df.set_index(coluna)
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao definir_indice ainda nao implementada (aula 1)")
+    # Define a coluna informada como índice e retorna o novo DataFrame.
+    # Útil para consultas onde a coluna escolhida é única (ex: nome da faixa).
+    return df.set_index(coluna)
 
 
 def tipos_das_colunas(df: pd.DataFrame) -> pd.Series:
@@ -92,5 +98,5 @@ def tipos_das_colunas(df: pd.DataFrame) -> pd.Series:
 
     Dica: o atributo .dtypes ja retorna isso.
     """
-    # TODO: implemente
-    raise NotImplementedError("Funcao tipos_das_colunas ainda nao implementada (aula 1)")
+    # Retorna os tipos de dados de cada coluna (int, float, object, etc.).
+    return df.dtypes
